@@ -1,0 +1,2 @@
+def hm():
+  print()
