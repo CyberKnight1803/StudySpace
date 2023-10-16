@@ -1,10 +1,10 @@
 CREATE TABLE Customers (
-    customer_id CHAR(10),
+    customer_id CHAR(32),
     given_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     mobile CHAR(10),
     email VARCHAR(30) NOT NULL,
-    PASSWORD VARCHAR(30) NOT NULL,
+    password VARCHAR(30) NOT NULL,
     address VARCHAR(60),
     payment_details VARCHAR(20),
     subscription_status BOOLEAN DEFAULT FALSE,
@@ -14,12 +14,12 @@ CREATE TABLE Customers (
 );
 
 CREATE TABLE Employees (
-    employee_id CHAR(10),
+    employee_id CHAR(32),
     given_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     mobile CHAR(10),
     email VARCHAR(30) NOT NULL,
-    PASSWORD VARCHAR(30) NOT NULL,
+    password VARCHAR(30) NOT NULL,
     address VARCHAR(60),
     ssn CHAR(13) NOT NULL,
     UNIQUE (email),
@@ -29,7 +29,7 @@ CREATE TABLE Employees (
 );
 
 CREATE TABLE Authors (
-    author_id CHAR(10),
+    author_id CHAR(32),
     given_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     mobile CHAR(10),
@@ -48,7 +48,7 @@ CREATE TABLE Books (
     pages INT,
     publication_year INT,
     description VARCHAR(200),
-    LANGUAGE VARCHAR(100),
+    language VARCHAR(100),
     google_link VARCHAR(60) NOT NULL,
     PRIMARY KEY (book_id)
 );
@@ -63,7 +63,7 @@ CREATE TABLE PaymentTransactions (
 CREATE TABLE Subscriptions (
     subscription_id SERIAL,
     subscription_name VARCHAR(30) NOT NULL,
-    subscription_cost REAL NOT NULL,
+    subscription_cost REAL NOT NULL CHECK(subscription_cost > 0),
     description VARCHAR(100),
     UNIQUE (subscription_name),
     PRIMARY KEY (subscription_id)
@@ -100,7 +100,7 @@ CREATE TABLE Classified_by (
 );
 
 CREATE TABLE Written_by (
-    author_id CHAR(10),
+    author_id CHAR(32),
     book_id INT,
     PRIMARY KEY (author_id, book_id),
     FOREIGN KEY (author_id) REFERENCES Authors,
@@ -108,7 +108,7 @@ CREATE TABLE Written_by (
 );
 
 CREATE TABLE Subscribe (
-    customer_id CHAR(10),
+    customer_id CHAR(32),
     subscription_id INT NOT NULL,
     start_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
@@ -126,7 +126,7 @@ CREATE TABLE Accessed_by (
 );
 
 CREATE TABLE Payments (
-    customer_id CHAR(10),
+    customer_id CHAR(32),
     transaction_id INT,
     subscription_id INT NOT NULL,
     PRIMARY KEY (customer_id, transaction_id),
