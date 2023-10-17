@@ -1,48 +1,35 @@
 import uuid
+import csv
+import pandas as pd
+import numpy as np
 import argparse
 
 
-def insertCustomers(file):
-  pass
+def createInsertQueries(table: str, file: str) -> None:
+  """
+    Args:
+      table: Name of the relation
+      file: path to csv file
+  """
 
-def insertEmployees(file):
-  pass 
+  with open(file, "r") as inFile:
+    row = inFile.readline().split(',')
+    attributes = ", ".join(row)[:-1]
 
-def insertAuthors(file):
-  pass 
+    datareader = csv.reader(inFile)
+    with open(f"./sql/{table}_insert.sql", 'w') as F:
+      for row in datareader:
+        for i in range(len(row)):
+          if row[i] not in ["NULL", "TRUE", "FALSE"]:
+            row[i] = f"'{row[i]}'"
 
-def insertBooks(file):
-  pass 
+        values = ", ".join(v for v in row)
+        query = f"INSERT INTO {table} ({attributes}) VALUES ({values});"
 
-def insertPaymentTransactions(file):
-  pass 
+        F.write(query)
+        F.write("\n\n")
 
-def insertSubscriptions(file):
-  pass 
-
-def insertSections(file):
-  pass 
-
-def insertPublishers(file):
-  pass 
-
-def insertPublished_by(file):
-  pass 
-
-def insertClassified_by(file):
- pass 
-
-def insertWritten_by(file):
-  pass 
-
-def insertSubscribe(file):
-  pass 
-
-def insertAccessed_by(file):
-  pass 
-
-def insertPayments(file):
-  pass 
+  F.close()
 
 if __name__=="__main__":
   
@@ -63,28 +50,11 @@ if __name__=="__main__":
     "Payments"
   ]
 
-  RUN_MAPPER = {
-    "Customers": insertCustomers, 
-    "Employees": insertEmployees, 
-    "Authors": insertAuthors, 
-    "Books": insertBooks, 
-    "PaymentTransactions": insertPaymentTransactions, 
-    "Subscriptions": insertSubscriptions, 
-    "Sections": insertSections,
-    "Publishers": insertPublishers, 
-    "Published_by": insertPublished_by, 
-    "Classified_by": insertClassified_by, 
-    "Written_by": insertWritten_by, 
-    "Subscribe": insertSubscribe, 
-    "Accessed_by": insertAccessed_by, 
-    "Payments": insertPayments
-  }
-
   # Parse args
   parser = argparse.ArgumentParser()  
   parser.add_argument("--table", type=str, choices=TABLE_CHOICES, required=True, help="Set table for which insert script is needed.")
   parser.add_argument("--file", type=str, required=True, help="Set the path to csv file from where data will be taken.")
   args = parser.parse_args()
 
-  # Run corresponding method
-  RUN_MAPPER[args.table](args.file)
+  # Generate Insert Queries
+  createInsertQueries(args.table, args.file)
