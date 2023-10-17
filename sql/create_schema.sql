@@ -6,7 +6,12 @@ CREATE TABLE Customers (
     email VARCHAR(30) NOT NULL,
     password VARCHAR(30) NOT NULL,
     address VARCHAR(60),
-    payment_details VARCHAR(20),
+    payment_details VARCHAR(20) CHECK(
+        payment_details = 'Apple pay'
+        or payment_details = 'Google pay'
+        or payment_details = 'Credit card'
+        or payment_details = 'Debit card'
+    ),
     subscription_status BOOLEAN DEFAULT FALSE,
     UNIQUE (email),
     UNIQUE (mobile),
