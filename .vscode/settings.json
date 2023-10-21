@@ -1,9 +1,41 @@
 {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true,
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}/scripts", 
-        "${workspaceFolder}/utils",
-        "${workspaceFolder}/src",
-    ]
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/scripts",
+    "${workspaceFolder}/utils",
+    "${workspaceFolder}/src"
+  ],
+  "editor.formatOnSave": true,
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "sqltools.format": {
+    "language": "sql",
+    "linesBetweenQueries": 2,
+    "reservedWordCase": "null"
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "mock1studyspace",
+      "database": "mock1studyspace",
+      "username": "omkarvijaypitale"
+    },
+    {
+      "previewLimit": 50,
+      "server": "35.196.159.118",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "coms4111-real-project",
+      "database": "proj1part2",
+      "username": "op2281"
+    }
+  ]
 }
