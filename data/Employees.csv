@@ -1,0 +1,11 @@
+user_id,given_name,last_name,mobile,email,password,address,ssn
+ebd446b53f494bf9a32eb3ef0d12e6a5,John,Doe,2025550178,john.doe@studyspace.com,john@doe,"132 Apple St, New York, NY 10001",347-11-2343
+fa0386f7ce0c4a8dab0e23dd0a26663b,Jane,Smith,4155550293,jane.smith@studyspace.com,jane@smith123,"789 Cedar Ln., Queens, NY 11301",523-14-1223
+d6ae693fc86e41699291bd79b4c91770,Alice ,Johnson,3125550467,alice.johnson@studyspace.com,jalice@1234,"456 Birch Ave., Brooklyn, NY 11201",213-23-2676
+ad3d1c5347f549c28d5563845e58c7bf,Bob,Williams,2135550524,bob.williams@studyspace.com,bobthebuilder,"101 Dogwood Dr., Bronx, NY 10451",462-39-0456
+c3c3512be55e4e93963dc567132bd044,Charlie,Williams,3055550932,charlie.williams@studyspace.com,charliewilliam,"234 Elm Pl., Manhattan, NY 10002",462-39-0416
+636291d2312644cca8b1b43e2ac343cb,Debbie,Davis,5035550181,debbie.davis@studyspace.com,debbie.davis123,"567 Fir Blvd., Staten Island, NY 10301",123-99-2132
+773241f02520479190411817de72b3a4,Eddie ,Miller,2145550167,eddie.miller@studyspace.com,miller123eddie,"890 Grove Ct., Harlem, NY 10027",645-23-2631
+5e2cc6d12f4542b0b0e05d6514c64187,Fiona,Wilson,7185550192,fiona.wilson@studyspace.com,fiona@wilson,"456 Ivy Rd., Flushing, NY 11354",231-34-4291
+45024012b06741c3ad8787f8e61d244b,George,Moore,2065550145,george.moore@studyspace.com,starwars123,"123 Holly Way, Astoria, NY 11102",563-48-2991
+38441acff27b45ddae36969769c166f4,Hannah,Taylor,4045550213,hannah.taylor@studyspace.com,hannah123456,"789 Juniper Sq., Yonkers, NY 10701",321-34-2342

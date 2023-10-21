@@ -1,0 +1,11 @@
+user_id,given_name,last_name,mobile,email,password,address,payment_details,subscription_status
+da2aea9ed14a410abf84de9d758b55c5,Omkar,Pitale,3479695525,op2281@columbia.edu,omkar@123,NULL,NULL,FALSE
+a327ec211a5047b284ba60338d5dcf30,Akshay,Iyer,3479695538,agi2108@columbia.edu,akshay@123,NULL,Apple pay,FALSE
+77b9b181ee4b4057b99876995cf45fa2,Harvey,Specter,NULL,harvey.spectre@gmail.com,harvey@spectre,116th Broadyway New York 10023,Credit card,TRUE
+75a32099c71b49759f868d0a76cd4b86,Mike,Ross,NULL,mike.ross@gmail.com,ross@999,NULL,Google pay,TRUE
+2f96fa528baa4521925ccfcbcf2d325a,Jon,Snow,NULL,jon.snow@gmail.com,jon19221,281 St Nicholas Ave New York 10027,Debit card,FALSE
+b289a1587833451ea2246fcb9ca1f2b9,Advait ,Raje,9987521495,raje.advait@gmail.com,raje123456,414 W 120th St New York 10027,NULL,FALSE
+7ca423fcba164376b4df624b7c5cfc41,Mihir,Kinare,9769877359,mihirkinare@gmail.com,mihukin@123,414 W 120th St New York 10027,NULL,FALSE
+518e6071499142f19ac38843af0f2454,Eshaan,Phatak,9833908259,eshaan.phatak@gmail.com,india11@eshaan,350 W 110th St New York 10025,Debit card,TRUE
+2c26cc47649d48369183049e03614b9e,Roveena,Kakkar,6280206251,roveenakakkar27@gmail.com,Roveena@123,NULL,Google pay,TRUE
+236b72d96cb44357bea12f1e1f3dc19a,Divye ,Kalra,9871911066,divyekalra@gmail.com,divye@kalra123,NULL,Debit card,TRUE
