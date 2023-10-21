@@ -36,6 +36,16 @@
       "name": "coms4111-real-project",
       "database": "proj1part2",
       "username": "op2281"
+    },
+    {
+      "previewLimit": 50,
+      "server": "35.196.159.118",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "Projectart2",
+      "database": "proj1part2",
+      "username": "op2281"
     }
   ]
 }
