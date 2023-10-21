@@ -1,60 +1,74 @@
 CREATE TABLE Customers (
-    customer_id CHAR(32),
+    user_id CHAR(32),
     given_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    mobile CHAR(10),
-    email VARCHAR(30) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    mobile CHAR(10) CHECK (mobile ~ '^[1-9][0-9]{9}$'),
+    email VARCHAR(50) NOT NULL CHECK (
+        email ~ '^[a-z]([a-z0-9]*\.)*[a-z0-9]+@([a-z]+\.)+[a-z]+$'
+    ),
+    password VARCHAR(30) NOT NULL CHECK (password ~ '^[a-zA-Z0-9@$.]{5,}$'),
     address VARCHAR(60),
-    payment_details VARCHAR(20) CHECK(
+    payment_details VARCHAR(20) CHECK (
         payment_details = 'Apple pay'
-        or payment_details = 'Google pay'
-        or payment_details = 'Credit card'
-        or payment_details = 'Debit card'
+        OR payment_details = 'Google pay'
+        OR payment_details = 'Credit card'
+        OR payment_details = 'Debit card'
     ),
     subscription_status BOOLEAN DEFAULT FALSE,
+    CHECK (
+        NOT (
+            subscription_status
+            AND payment_details is NULL
+        )
+    ),
     UNIQUE (email),
     UNIQUE (mobile),
-    PRIMARY KEY (customer_id)
+    PRIMARY KEY (user_id)
 );
 
 CREATE TABLE Employees (
-    employee_id CHAR(32),
+    user_id CHAR(32),
     given_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    mobile CHAR(10),
-    email VARCHAR(30) NOT NULL,
-    password VARCHAR(30) NOT NULL,
-    address VARCHAR(60),
-    ssn CHAR(13) NOT NULL,
+    mobile CHAR(10) CHECK (mobile ~ '^[1-9][0-9]{9}$'),
+    email VARCHAR(50) NOT NULL CHECK (
+        email ~ '^[a-z]([a-z0-9]*\.)*[a-z0-9]+@studyspace.com$'
+    ),
+    password VARCHAR(30) NOT NULL CHECK (password ~ '^[a-zA-Z0-9@$.]{5,}$'),
+    address VARCHAR(60) NOT NULL,
+    ssn CHAR(11) NOT NULL CHECK (
+        ssn ~ '^[0-9]{3}-[0-9]{2}-[0-9]{4}$'
+    ),
     UNIQUE (email),
     UNIQUE (mobile),
     UNIQUE (ssn),
-    PRIMARY KEY (employee_id)
+    PRIMARY KEY (user_id)
 );
 
 CREATE TABLE Authors (
-    author_id CHAR(32),
+    user_id CHAR(32),
     given_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    mobile CHAR(10),
-    email VARCHAR(30) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    mobile CHAR(10) CHECK (mobile ~ '^[1-9][0-9]{9}$'),
+    email VARCHAR(50) NOT NULL CHECK (
+        email ~ '^[a-z]([a-z0-9]*\.)*[a-z0-9]+@([a-z]+\.)+[a-z]+$'
+    ),
+    password VARCHAR(30) NOT NULL CHECK (password ~ '^[a-zA-Z0-9@$.]{5,}$'),
     is_verified BOOLEAN DEFAULT FALSE,
     UNIQUE (email),
     UNIQUE (mobile),
-    PRIMARY KEY (author_id)
+    PRIMARY KEY (user_id)
 );
 
 CREATE TABLE Books (
     book_id SERIAL,
     book_name VARCHAR(80) NOT NULL,
-    edition INT,
-    pages INT,
+    edition INT CHECK (edition > 0),
+    pages INT CHECK (pages > 0),
     publication_year INT,
-    description VARCHAR(200),
+    description VARCHAR(1000),
     language VARCHAR(100),
-    google_link VARCHAR(60) NOT NULL,
+    google_link VARCHAR(150) NOT NULL,
     PRIMARY KEY (book_id)
 );
 
@@ -64,7 +78,6 @@ CREATE TABLE PaymentTransactions (
     PRIMARY KEY (transaction_id)
 );
 
--- Yet to add subscription_cost > 0 constraint
 CREATE TABLE Subscriptions (
     subscription_id SERIAL,
     subscription_name VARCHAR(30) NOT NULL,
@@ -105,20 +118,21 @@ CREATE TABLE Classified_by (
 );
 
 CREATE TABLE Written_by (
-    author_id CHAR(32),
+    user_id CHAR(32),
     book_id INT,
-    PRIMARY KEY (author_id, book_id),
-    FOREIGN KEY (author_id) REFERENCES Authors,
+    PRIMARY KEY (user_id, book_id),
+    FOREIGN KEY (user_id) REFERENCES Authors,
     FOREIGN KEY (book_id) REFERENCES Books
 );
 
 CREATE TABLE Subscribe (
-    customer_id CHAR(32),
+    user_id CHAR(32),
     subscription_id INT NOT NULL,
     start_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
-    PRIMARY KEY (customer_id),
-    FOREIGN KEY (customer_id) REFERENCES Customers,
+    CHECK (end_date = start_date + '1 year'),
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES Customers,
     FOREIGN KEY (subscription_id) REFERENCES Subscriptions
 );
 
@@ -131,11 +145,11 @@ CREATE TABLE Accessed_by (
 );
 
 CREATE TABLE Payments (
-    customer_id CHAR(32),
+    user_id CHAR(32),
     transaction_id INT,
     subscription_id INT NOT NULL,
-    PRIMARY KEY (customer_id, transaction_id),
-    FOREIGN KEY (customer_id) REFERENCES Customers,
+    PRIMARY KEY (user_id, transaction_id),
+    FOREIGN KEY (user_id) REFERENCES Customers,
     FOREIGN KEY (transaction_id) REFERENCES PaymentTransactions,
     FOREIGN KEY (subscription_id) REFERENCES Subscriptions
 );

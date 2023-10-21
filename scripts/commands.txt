@@ -1,0 +1,27 @@
+\copy customers(user_id, given_name, last_name, mobile, email, password, address, payment_details, subscription_status) FROM '~/Documents/sde/projects/StudySpace/code/data/Customers.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy employees(user_id, given_name, last_name, mobile, email, password, address, ssn) FROM '~/Documents/sde/projects/StudySpace/code/data/Employees.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy authors(user_id, given_name, last_name, mobile, email, password, is_verified) FROM '~/Documents/sde/projects/StudySpace/code/data/Authors.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy books(book_name, edition, pages, publication_year, description, language, google_link) FROM '~/Documents/sde/projects/StudySpace/code/data/Books.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy paymenttransactions(time_stamp) FROM '~/Documents/sde/projects/StudySpace/code/data/PaymentTransactions.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy subscriptions(subscription_name, subscription_cost, description) FROM '~/Documents/sde/projects/StudySpace/code/data/Subscriptions.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy sections(section_name) FROM '~/Documents/sde/projects/StudySpace/code/data/Sections.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy publishers (publisher_name) FROM '~/Documents/sde/projects/StudySpace/code/data/Publishers.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy published_by(book_id, publisher_id) FROM '~/Documents/sde/projects/StudySpace/code/data/Published_by.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy classified_by(book_id, section_id) FROM '~/Documents/sde/projects/StudySpace/code/data/Classified_by.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy written_by(user_id, book_id) FROM '~/Documents/sde/projects/StudySpace/code/data/Written_by.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy subscribe(user_id, subscription_id, start_date, end_date) FROM '~/Documents/sde/projects/StudySpace/code/data/Subscribe.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy accessed_by(book_id, subscription_id) FROM '~/Documents/sde/projects/StudySpace/code/data/Accessed_by.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
+
+\copy payments(user_id, transaction_id, subscription_id) FROM '~/Documents/sde/projects/StudySpace/code/data/Payments.csv' with (format csv, header true, delimiter ',', NULL 'NULL');
