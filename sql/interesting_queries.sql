@@ -11,7 +11,7 @@ WHERE A.user_id = W.user_id
 GROUP BY A.user_id
 ORDER BY number_of_sections DESC;
 
--- Query 2 Selecting all customers who bought the more expensive subscription and renewed it at least once
+-- Query 2
 SELECT A.user_id,
   A.given_name,
   A.last_name,
@@ -25,7 +25,7 @@ GROUP BY A.user_id
 HAVING COUNT(P.transaction_id) >= 2
 ORDER BY number_of_renewals DESC;
 
--- Query 3 books accessible by both subscriptions and published after 2000
+-- Query 3
 SELECT B.book_id,
   B.book_name,
   B.publication_year
@@ -36,7 +36,7 @@ WHERE B.publication_year > 2000
 GROUP BY B.book_id
 HAVING COUNT(A.subscription_id) = 2;
 
--- Query 4 All users that transacted payments in both August and September 2023
+-- Query 4
 SELECT C.user_id,
   C.given_name,
   C.last_name
