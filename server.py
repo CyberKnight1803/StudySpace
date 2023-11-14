@@ -55,23 +55,6 @@ def teardown_request(exception):
   except Exception as e:
     pass
 
-
-@app.route('/')
-def home():
-  print(request.args)
-
-
-  # Example query 
-  cursor = g.conn.execute(text("""
-    SELECT * 
-    FROM customers;
-  """)) 
-
-  for result in cursor:
-    print(result)
-  
-  return "HELLO MAIN PAGE"
-
 # Register blueprints
 app.register_blueprint(home_bp)
 app.register_blueprint(customer_bp, url_prefix='/customer')
