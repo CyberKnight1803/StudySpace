@@ -4,7 +4,8 @@ from sqlalchemy import *
 author_bp = Blueprint(
   'author_bp', 
   __name__,
-  template_folder='templates'
+  template_folder='templates', 
+  url_prefix='/author'
 )
 
 @author_bp.route('/')

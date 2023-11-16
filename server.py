@@ -57,10 +57,10 @@ def teardown_request(exception):
 
 # Register blueprints
 app.register_blueprint(home_bp)
-app.register_blueprint(customer_bp, url_prefix='/customer')
-app.register_blueprint(employee_bp, url_prefix='/employee')
-app.register_blueprint(author_bp, url_prefix='/author')
-app.register_blueprint(book_bp, url_prefix='/book')
+app.register_blueprint(customer_bp)
+app.register_blueprint(employee_bp)
+app.register_blueprint(author_bp)
+app.register_blueprint(book_bp)
 
 
 if __name__=="__main__":
