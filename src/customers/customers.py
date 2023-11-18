@@ -52,7 +52,7 @@ def login():
 def signup():
   if request.method == 'GET':
     query_param = request.args.get('incorrect_details')
-    return render_template('signup.html', incorrect_details=query_param)
+    return render_template('customers/signup.html', incorrect_details=query_param)
 
   else:
     new_customer = {
