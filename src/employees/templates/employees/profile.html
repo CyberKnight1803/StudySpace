@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+ </head>
+ <body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  <form method="POST" action="/employee/profile">
+    <label>Given Name: </label><br>
+    <input type="text" name="givenName" value="{{employee[1]}}" readonly><br>
+
+    <label>Last Name: </label><br>
+    <input type="text" name="lastName" value="{{employee[2]}}" readonly><br>
+
+    <label>Mobile: </label><br>
+    <input type="number" name="mobile" maxlength="10" value="{{employee[3]}}"><br>
+
+    <label>Email: </label><br>
+    <input type="email" name="email" value="{{employee[4]}}" readonly><br>
+
+    <label>Address: </label><br>
+    <input type="text" name="address" value="{{employee[6]}}"><br>
+
+    <label>SSN: </label><br>
+    <input type="text" name="address" value="{{employee[7]}}" readonly><br>
+
+    <p></p>
+    <input type="submit" value="Update Details">
+  </form>
+
+  {% if incorrect_details == "True" %}
+   <p>Please fill correct details to udpate!</p>
+  {% endif %}
+
+ </body>
+</html>

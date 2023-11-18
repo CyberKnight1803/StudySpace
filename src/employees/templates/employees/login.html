@@ -7,15 +7,19 @@
  <body>
   <h1>Study Space</h1>
 
-  <form method="POST" action="/customer/login">
+  <form method="POST" action="/employee/login">
     <label>Email: </label><br>
-    <input type="text" name="email" required><br>
+    <input type="email" name="email" required><br>
 
     <label>Password: </label><br>
-    <input type="text" name="password" required><br>
+    <input type="password" name="password" required><br>
 
     <p></p>
     <input type="submit" value="Submit">
    </form>
+
+   {% if incorrect_details == "True" %}
+   <p>Please fill correct login credentials</p>
+   {% endif %}
  </body>
 </html>

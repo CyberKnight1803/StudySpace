@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+ </head>
+ <body>
+  <h1>Study Space</h1>
+
+  <p><a href="/customer">Home Page</a></p>
+
+  <form method="POST" action="/customer/profile">
+    <label>Given Name: </label><br>
+    <input type="text" name="givenName" value="{{customer[1]}}" readonly><br>
+
+    <label>Last Name: </label><br>
+    <input type="text" name="lastName" value="{{customer[2]}}" readonly><br>
+
+    <label>Mobile: </label><br>
+    <input type="number" name="mobile" maxlength="10" value="{{customer[3]}}"><br>
+
+    <label>Email: </label><br>
+    <input type="email" name="email" value="{{customer[4]}}"><br>
+
+    <label>Address: </label><br>
+    <input type="text" name="address" value="{{customer[6]}}"><br>
+
+    <p></p>
+    <input type="submit" value="Update Details">
+  </form>
+
+  {% if incorrect_details == "True" %}
+   <p>Please fill correct details to udpate!</p>
+  {% endif %}
+
+  <p>Payment Details: {{customer[7]}}</p>
+  {% if customer[8] == True %}
+  <p>Subscription Status: Active</p>
+  {% else %}
+  <p>Subscription Status: Not Active</p>
+  {% endif %}
+ </body>
+</html>

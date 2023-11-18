@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+ </head>
+ <body>
+  <h1>Study Space - Subscription Plans</h1>
+
+  {% for subscription in subscriptions %}
+  <h3>Plan {{subscription[0]}}: {{subscription[1]}}</h3>
+  <p>Cost: ${{subscription[2]}}</p>
+  <p>Description:</p>
+  <p>{{subscription[3]}}</p>
+  {% endfor %}
+ </body>
+</html>

@@ -7,18 +7,21 @@ from src.customers.customers import customer_bp
 from src.authors.authors import author_bp
 from src.employees.employees import employee_bp
 from src.books.books import book_bp
+from src.subscriptions.subscription import subscription_bp
 
 from config import (
   DATABASEURI, 
   DEVLOPMENT_ENV, 
-  HOST, 
-  THREADED
+  THREADED, 
+  SESSION_SECRET_KEY
 )
 
 # template_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 # app = Flask(__name__, template_folder=template_directory)
 
 app = Flask(__name__)
+app.secret_key = SESSION_SECRET_KEY
+
 
 # Database Connection
 engine = create_engine(DATABASEURI)
@@ -61,6 +64,7 @@ app.register_blueprint(customer_bp)
 app.register_blueprint(employee_bp)
 app.register_blueprint(author_bp)
 app.register_blueprint(book_bp)
+app.register_blueprint(subscription_bp)
 
 
 
@@ -69,8 +73,8 @@ if __name__=="__main__":
   import click
 
   @click.command()
-  @click.option('--debug', is_flag=True)
-  @click.option('--threaded', is_flag=True)
+  @click.option('--debug', is_flag=DEVLOPMENT_ENV)
+  @click.option('--threaded', is_flag=THREADED)
   @click.argument('HOST', default='0.0.0.0')
   @click.argument('PORT', default=8111, type=int)
   def run(debug, threaded, host, port):
