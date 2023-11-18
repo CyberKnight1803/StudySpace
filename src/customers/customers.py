@@ -71,8 +71,6 @@ def signup():
     elif len(new_customer['mobile']) != 10:
       return redirect(customer_bp.url_prefix + '/signup' + '?incorrect_details=True')
 
-    print(new_customer)
-
     try:
       query_res = g.conn.execute(text("""
       INSERT INTO customers (
@@ -118,14 +116,22 @@ def view_profile():
     return redirect(customer_bp.url_prefix)
 
   query_params = request.args.get('incorrect_details')
-  return render_template('customers/profile.html', customer=query_res, incorrect_details=query_params)
+
+  query_data = []
+  for i in range(len(query_res)):
+    if query_res[i] is None:
+      query_data.append('')
+    else:
+      query_data.append(query_res[i])
+    
+  return render_template('customers/profile.html', customer=query_data, incorrect_details=query_params)
 
 @customer_bp.route('/profile', methods=['POST'])
 def update_profile():
   update_profile_details = {
     'user_id': session['current_user_id'],
     'mobile': request.form.get('mobile'), 
-    'address': request.form.get('address'),
+    'address': None if request.form.get('address') is 'None' else request.form.get('address'),
     'email': request.form.get('email'),
   }
 

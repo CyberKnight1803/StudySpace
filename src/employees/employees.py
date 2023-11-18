@@ -72,8 +72,15 @@ def view_profile():
   if query_res is None:
     return redirect(employee_bp.url_prefix)
   
+  query_data = []
+  for i in range(len(query_res)):
+    if query_res[i] is None:
+      query_data.append('')
+    else:
+      query_data.append(query_res[i])
+  
   query_params = request.args.get('incorrect_details')
-  return render_template('employees/profile.html', employee=query_res, incorrect_details=query_params)
+  return render_template('employees/profile.html', employee=query_data, incorrect_details=query_params)
 
 @employee_bp.route('/profile', methods=['POST'])
 def update_profile():
