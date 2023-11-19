@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+ </head>
+ <body>
+  <h1>Study Space - Transaction History</h1>
+  <p><a href="/customer">Home</a></p>
+
+  {% if noTransactions %}
+    <p>No Transaction History</p>
+
+  {% else %}
+    <table>
+      <tr>
+        <th>Transaction ID</th>
+        <th>Subscription Name</th>
+        <th>Subscription Cost</th>
+        <th>Transaction Time</th>
+      </tr>
+      {% for transaction in transactions %}
+        <tr>
+          <td>{{transaction['transaction_id']}}</td>
+          <td>{{transaction['subscription_name']}}</td>
+          <td>${{transaction['subscription_cost']}}</td>
+          <td>{{transaction['time_stamp']}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+ </body>
+</html>

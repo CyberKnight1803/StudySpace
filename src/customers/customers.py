@@ -161,32 +161,90 @@ def update_profile():
 
 @customer_bp.route('/cancel-subscription', methods=['POST'])
 def cancel_subscription():
-  cursor.g.conn.execute(text(
-    """
-    SELECT S.end_date
-    FROM Subscribe S
-    WHERE S.user_id=:user_id
-    """
-  ), {'user_id': session['current_user_id']})
+  try:
+    cursor = g.conn.execute(text(
+      """
+      DELETE FROM Subscribe
+      WHERE user_id=:user_id
+      """
+    ), {'user_id': session['current_user_id']})
+    g.conn.commit()
 
-  cursor = g.conn.execute(text(
-    """
-    UPDATE Subscribe
-    SET end_date = CURRENT_DATE
-    WHERE user_id = :user_id AND end_date > CURRENT_DATE;
-    """ 
-  ), {'user_id': session['current_user_id']})
+    cursor = g.conn.execute(text(
+      """
+      UPDATE Customers 
+      SET subscription_status=FALSE
+      WHERE user_id=:user_id;
+      """
+    ), {'user_id': session['current_user_id']})
+    g.conn.commit()
 
-  g.conn.commit()
-
-  cursor = g.conn.execute(text(
-    """
-    UPDATE Customers
-    SET subscription_status = FALSE
-    WHERE user_id = :user_id;
-    """
-  ), {'user_id': session['current_user_id']})
-
-  g.conn.commit()
+  except Exception as e:
+    pass 
 
   return redirect(customer_bp.url_prefix + '/profile') 
+
+
+
+@customer_bp.route('/transaction-history', methods=['GET'])
+def view_transaction_history():
+
+  cursor = g.conn.execute(text(
+    """
+    SELECT pt.transaction_id, s.subscription_name, pt.time_stamp, s.subscription_cost
+    FROM paymenttransactions pt, payments p, subscriptions s
+    WHERE p.transaction_id = pt.transaction_id AND p.subscription_id = s.subscription_id AND p.user_id = :user_id
+    ORDER BY pt.time_stamp DESC;
+    """
+  ), {'user_id': session['current_user_id']})
+  g.conn.commit()
+
+  transactions = cursor.mappings().all()
+  
+  noTransactions = False 
+  if transactions is None:
+    noTransactions = True
+
+  return render_template('customers/transactions.html', transactions=transactions, noTransactions=noTransactions) 
+
+@customer_bp.route('/delete-payment-details', methods=['POST'])
+def delete_payment_details():
+  cursor = g.conn.execute(text(
+    """
+    UPDATE Customers 
+    SET payment_details = NULL 
+    WHERE user_id=:user_id
+    """
+  ), {'user_id': session['current_user_id']})
+  g.conn.commit()
+
+  return redirect(customer_bp.url_prefix + '/profile')
+
+@customer_bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+  if request.method == 'GET':
+    incorrect_details = request.args.get('incorrect_details')
+    return render_template('customers/reset_password.html', incorrect_details=incorrect_details) 
+  
+  else:
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+
+    if password != confirm_password:
+      return redirect(customer_bp.url_prefix + '/reset-password' + '?incorrect_details=True')
+
+    try:
+      cursor = g.conn.execute(text(
+      """
+      UPDATE Customers 
+      SET password=:password
+      WHERE user_id=:user_id;
+      """
+      ), {'user_id': session['current_user_id'], 'password': password})
+    
+      g.conn.commit()
+
+    except Exception as e:
+      return redirect(customer_bp.url_prefix + '/reset-password' + '?incorrect_details=True')
+
+    return redirect(customer_bp.url_prefix + '/profile')

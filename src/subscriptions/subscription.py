@@ -64,13 +64,26 @@ def update_subscription():
   
   else:
     try:
-      cursor.g.conn.execute(text(
+      cursor = g.conn.execute(text(
         """
-        DELETE FROM Subscribe 
-        WHERE user_id=:user_id
+        SELECT C.subscription_status
+        FROM Customers C
+        WHERE C.user_id=:user_id;
         """
       ), {'user_id': session['current_user_id']})
       g.conn.commit()
+
+      subscription_status = cursor.scalar()
+      print(f"subscription_status: {subscription_status}")
+
+      if subscription_status:
+        cursor = g.conn.execute(text(
+          """
+          DELETE FROM Subscribe 
+          WHERE user_id=:user_id;
+          """
+        ), {'user_id': session['current_user_id']})
+        g.conn.commit()
 
       current_timestamp = datetime.now()
       start_date = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
@@ -102,10 +115,20 @@ def update_subscription():
         """
       ), {'user_id': session['current_user_id'], 'transaction_id': transaction_id, 'subscription_id': subscription_id})
       g.conn.commit()
-    
-    except Exception as e:
-      return redirect('/customer/profile')
 
+      # Update Customer Table 
+      cursor = g.conn.execute(text(
+        """
+        UPDATE Customers 
+        SET subscription_status=TRUE
+        WHERE user_id=:user_id
+        """
+      ), {'user_id': session['current_user_id']})
+      g.conn.commit()
+
+    except Exception as e:
+      print('ERROR AT update_subscription')
+      return redirect('/customer/profile')
 
     return redirect('/customer/profile')
 

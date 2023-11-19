@@ -33,18 +33,29 @@
    <p>Please fill correct details to udpate!</p>
   {% endif %}
 
-  <p>Payment Details: {{customer['payment_details']}}</p>
+  <p>
+    Payment Details: {{customer['payment_details']}}
+    {% if customer['subscription_status'] == False and customer['payment_details'] %}
+      <form method="POST" action="/customer/delete-payment-details">
+        <input type="submit" value="delete payment details"/>
+      </form>
+    {% endif %}
+  </p>
+
   {% if customer['subscription_status'] == True %}
-  <p>Subscription Status: Active</p>
-  <p>Plan: {{subscription_name}}</p>
-  <p><a href="/subscription">Switch Plans?</a></p>
-  <form method="POST" action="/customer/cancel-subscription">
-    <input type="submit" value="Cancel Subscription"/>
-  </form>
-  
-  {% else %}
-  <p>Subscription Status: Not Active</p>
-  <p><a href="/subscription">Take a look at offered subscription plans</a></p>
+    <p>Subscription Status: Active</p>
+    <p>Plan: {{subscription_name}}</p>
+    <p><a href="/subscription">Switch Plans?</a></p>
+    <form method="POST" action="/customer/cancel-subscription">
+      <input type="submit" value="Cancel Subscription"/>
+    </form>
+    
+    {% else %}
+    <p>Subscription Status: Not Active</p>
+    <p><a href="/subscription">Take a look at offered subscription plans</a></p>
   {% endif %}
+
+  <p><a href="/customer/reset-password">Reset Password</a></p>
+  
  </body>
 </html>

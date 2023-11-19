@@ -105,7 +105,7 @@ CREATE TABLE Published_by (
     book_id INT,
     publisher_id INT NOT NULL,
     PRIMARY KEY (book_id),
-    FOREIGN KEY (book_id) REFERENCES Books,
+    FOREIGN KEY (book_id) REFERENCES Books ON DELETE CASCADE,
     FOREIGN KEY (publisher_id) REFERENCES Publishers
 );
 
@@ -113,7 +113,7 @@ CREATE TABLE Classified_by (
     book_id INT,
     section_id INT,
     PRIMARY KEY (book_id, section_id),
-    FOREIGN KEY (book_id) REFERENCES Books,
+    FOREIGN KEY (book_id) REFERENCES Books ON DELETE CASCADE,
     FOREIGN KEY (section_id) REFERENCES Sections
 );
 

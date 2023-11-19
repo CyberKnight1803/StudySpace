@@ -20,5 +20,4 @@ def index():
   ))
   g.conn.commit()
   subscription_plans = cursor.mappings().all()
-  print(subscription_plans)
   return render_template('home.html', subscription_plans=subscription_plans)
