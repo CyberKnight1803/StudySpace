@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  {% for payment in payments %}
+  <h3>payment ID: {{payment[0]}}</h3>
+  <p>User id: {{payment[1]}}</p>
+  <p>Timestamp: {{payment[2]}}</p>
+  <p>Subscription name: {{payment[3]}}</p>
+  <p>Transaction Amount: {{payment[4]}}</p>
+  {% endfor %}
+
+</body>
+
+</html>

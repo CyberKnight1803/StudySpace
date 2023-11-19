@@ -43,9 +43,10 @@
       "server": "34.74.171.121",
       "port": 5432,
       "driver": "PostgreSQL",
-      "name": "studyspace_proj",
+      "name": "studyspace_frontend",
+      "database": "proj1part2",
       "username": "op2281",
-      "database": "proj1part2"
+      "password": "357768"
     }
   ]
 }

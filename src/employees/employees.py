@@ -146,6 +146,50 @@ def view_authors():
   if query_res is None:
     return redirect(employee_bp.url_prefix)
   return render_template('employees/views/authors.html', authors=query_res)
+@employee_bp.route('/books', methods=['GET']) 
+def view_books():
+  if 'current_user_id' not in session or session['user_type'] != 'employee':
+    return redirect(employee_bp.url_prefix + '/login')
+  cursor = g.conn.execute(text("""
+    SELECT *
+    FROM Books B
+  """))
+  query_res = cursor.fetchall()
+  if query_res is None:
+    return redirect(employee_bp.url_prefix)
+  books = query_res
+  books_and_authors = []
+  for book in books:
+    cursor = g.conn.execute(text("""
+    SELECT A.user_id, A.given_name, A.last_name
+    FROM Written_by W, Authors A
+    WHERE W.book_id =:book_id AND W.user_id = A.user_id
+    """), {"book_id":book[0]})
+    g.conn.commit()
+    query_res = cursor.fetchall()
+    authors_list = ""
+    for author in query_res:
+      authors_list = authors_list + author[1]+" "+author[2] + ", "
+    authors_list = authors_list[:-2]
+    temp_book = list(book)
+    books_and_authors.append(temp_book+[authors_list])
+  return render_template('employees/views/books.html', books=books_and_authors)
+@employee_bp.route('/payments', methods=['GET']) 
+def view_payments():
+  if 'current_user_id' not in session or session['user_type'] != 'employee':
+    return redirect(employee_bp.url_prefix + '/login')
+  cursor = g.conn.execute(text("""
+    SELECT P.transaction_id, P.user_id, T.time_stamp, S.subscription_name, S.subscription_cost
+    FROM Payments P, PaymentTransactions T, Subscriptions S
+    WHERE P.transaction_id = T.transaction_id AND P.subscription_id = S.subscription_id
+  """))
+  g.conn.commit()
+  query_res = cursor.fetchall()
+  if query_res is None:
+    return redirect(employee_bp.url_prefix)
+  return render_template('employees/views/payments.html', payments=query_res)
+
+
 
 
 
@@ -158,20 +202,15 @@ def add_publisher_update():
   publisher_details = {
     'publisher_name': request.form.get('publisher_name'),
   }
-
   cursor = g.conn.execute(text("""
     INSERT INTO Publishers (publisher_name)
     VALUES (:publisher_name);
   """), publisher_details)
-
   g.conn.commit()
-
   return redirect(employee_bp.url_prefix + '/') 
-
 @employee_bp.route('/remove/customer', methods=['GET'])
 def get_customer():
   return render_template('employees/edits/get_customer.html')
-
 @employee_bp.route('/remove/customer', methods=['POST'])
 def remove_customer():
   if 'current_user_id' not in session or session['user_type'] != 'employee':
@@ -194,8 +233,33 @@ def remove_customer():
   except Exception as e:
     print("The deletion error is still there")
     pass
-    
   return render_template('employees/edits/get_customer.html', incorrect_details=incorrect_message)
+@employee_bp.route('/remove/book', methods=['GET'])
+def get_book():
+  return render_template('employees/edits/get_book.html')
+@employee_bp.route('/remove/book', methods=['POST'])
+def remove_book():
+  if 'current_user_id' not in session or session['user_type'] != 'employee':
+    return redirect(employee_bp.url_prefix + '/login')
+  incorrect_message = "False"
+  sql_query_params = {
+    'book_id': request.form.get('book_id')
+  } 
+  try:
+    cursor = g.conn.execute(text("""
+      DELETE FROM Books B 
+      WHERE B.book_id=:book_id
+    """), sql_query_params)
+    g.conn.commit()
+    affected_rows = cursor.rowcount
+    if affected_rows == 0:
+      incorrect_message = "True"
+    else:
+      incorrect_message = "False"
+  except Exception as e:
+    print("The deletion error is still there")
+    pass
+  return render_template('employees/edits/get_book.html', incorrect_details=incorrect_message)
 
 @employee_bp.route('/verify/author', methods=['GET'])
 def get_profile():
@@ -217,4 +281,4 @@ def verify_profile():
     incorrect_message = "True"
   else:
     incorrect_message = "False"
-  return redirect(employee_bp.url_prefix + '/verify/author'+'?incorrect_details='+incorrect_message)
+  return render_template('employees/edits/get_author.html', incorrect_details=incorrect_message)

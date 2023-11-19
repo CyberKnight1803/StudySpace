@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  <form method="POST" action="/employee/remove/book">
+    <label>Add book ID: </label><br>
+    <input type="book_id" name="book_id" required><br>
+
+    {% if incorrect_details == "True" %}
+    <p>No such book exists.</p>
+    {% endif %}
+    {% if incorrect_details == "False" %}
+    <p>Book successfully removed.</p>
+    {% endif %}
+
+    <p></p>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+
+</html>

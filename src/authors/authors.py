@@ -89,7 +89,7 @@ def signup():
         :mobile, 
         :email, 
         :password, 
-        :is_verified
+        False
       )
       """), new_author)
       g.conn.commit()
@@ -109,28 +109,21 @@ def logout():
 def view_profile():
   if 'current_user_id' not in session or session['user_type'] != 'author':
     return redirect(author_bp.url_prefix + '/login')
-  
   sql_query_params = {
     'user_id': session['current_user_id']
   }
-
   cursor = g.conn.execute(text("""SELECT * FROM authors C WHERE C.user_id=:user_id"""), sql_query_params)
   g.conn.commit()
-
   query_res = cursor.fetchone()
-
   if query_res is None: 
     return redirect(author_bp.url_prefix)
-
   query_params = request.args.get('incorrect_details')
-
   query_data = []
   for i in range(len(query_res)):
     if query_res[i] is None:
       query_data.append('')
     else:
       query_data.append(query_res[i])
-    
   return render_template('profile.html', author=query_data, incorrect_details=query_params)
 
 @author_bp.route('/profile', methods=['POST'])
@@ -138,14 +131,13 @@ def update_profile():
   update_profile_details = {
     'user_id': session['current_user_id'],
     'mobile': request.form.get('mobile'), 
-    'is_verified': None if request.form.get('is_verified') is 'None' else request.form.get('is_verified'),
     'email': request.form.get('email'),
   }
 
   try:
     cursor = g.conn.execute(text("""
       UPDATE authors
-      SET mobile=:mobile, email=:email, is_verified=:is_verified
+      SET mobile=:mobile, email=:email
       WHERE user_id=:user_id
     """), update_profile_details)
 

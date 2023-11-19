@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  {% for book in books %}
+  <h3>book ID: {{book[0]}}</h3>
+  <p>Authors: {{book[8]}}</p>
+  <p>Name: {{book[1]}}</p>
+  <p>Edition: {{book[2]}}</p>
+  <p>Pages: {{book[3]}}</p>
+  <p>Publication_year: {{book[4]}}</p>
+  <p>Description: {{book[5]}}</p>
+  <p>Language: {{book[6]}}</p>
+  <p>Link: {{book[7]}}</p>
+  {% endfor %}
+
+</body>
+
+</html>
