@@ -12,6 +12,13 @@
   <p>Cost: ${{subscription[2]}}</p>
   <p>Description:</p>
   <p>{{subscription[3]}}</p>
+
+  {% if subscription[0] in not_subscribed_subscription_ids %}
+    <form method="POST" action="/subscription/purchase?subscription_id={{subscription[0]}}">
+      <input type="submit" value="Subscribe"/>
+    </form>
+  {% endif %}
+
   {% endfor %}
  </body>
 </html>

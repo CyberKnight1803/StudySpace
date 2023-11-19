@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+ </head>
+ <body>
+  <h1>Study Space - Add payment details</h1>
+  <form method="POST" action="/subscription/payment-details">
+    <input type="hidden" name="subscription_id" value="{{subscription_id}}"/>
+    <label>Payment Method</label>
+    <select id="payment_details" name="payment_details">
+      <option value="Apple pay">Apple pay</option>
+      <option value="Google pay">Google pay</option>
+      <option value="Credit card">Credit card</option>
+      <option value="Debit card">Debit card</option>
+    </select><br>
+    
+    <p></p>
+    <input type="submit" value="Add Payment"/>
+  </form>
+
+  <p><a href="/subscription">Cancel</a></p>
+ </body>
+</html>

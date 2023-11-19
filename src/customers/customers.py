@@ -110,28 +110,38 @@ def view_profile():
   cursor = g.conn.execute(text("""SELECT * FROM Customers C WHERE C.user_id=:user_id"""), sql_query_params)
   g.conn.commit()
 
-  query_res = cursor.fetchone()
+  query_res = cursor.mappings().all()
 
   if query_res is None: 
     return redirect(customer_bp.url_prefix)
 
   query_params = request.args.get('incorrect_details')
 
-  query_data = []
-  for i in range(len(query_res)):
-    if query_res[i] is None:
-      query_data.append('')
-    else:
-      query_data.append(query_res[i])
-    
-  return render_template('customers/profile.html', customer=query_data, incorrect_details=query_params)
+  customer = dict(query_res[0])
+  if customer['address'] is None:
+    customer['address'] = ''
+
+  subscription_name = ''
+  if customer['subscription_status']:
+    cursor = g.conn.execute(text("""
+    SELECT S.subscription_name 
+    FROM Customers C, Subscriptions S, Subscribe sub
+    WHERE C.user_id = :user_id AND C.user_id = sub.user_id AND S.subscription_id = sub.subscription_id
+    """), {'user_id': session['current_user_id']}) 
+
+    query_res = cursor.fetchone()
+
+    if query_res is not None:
+      subscription_name = query_res[0]
+  
+  return render_template('customers/profile.html', customer=customer, subscription_name=subscription_name, incorrect_details=query_params)
 
 @customer_bp.route('/profile', methods=['POST'])
 def update_profile():
   update_profile_details = {
     'user_id': session['current_user_id'],
     'mobile': request.form.get('mobile'), 
-    'address': None if request.form.get('address') is 'None' else request.form.get('address'),
+    'address': None if request.form.get('address') == '' else request.form.get('address'),
     'email': request.form.get('email'),
   }
 
@@ -146,5 +156,37 @@ def update_profile():
 
   except Exception as e:
     return redirect(customer_bp.url_prefix + '/profile' + '?incorrect_details=True')
+
+  return redirect(customer_bp.url_prefix + '/profile') 
+
+@customer_bp.route('/cancel-subscription', methods=['POST'])
+def cancel_subscription():
+  cursor.g.conn.execute(text(
+    """
+    SELECT S.end_date
+    FROM Subscribe S
+    WHERE S.user_id=:user_id
+    """
+  ), {'user_id': session['current_user_id']})
+
+  cursor = g.conn.execute(text(
+    """
+    UPDATE Subscribe
+    SET end_date = CURRENT_DATE
+    WHERE user_id = :user_id AND end_date > CURRENT_DATE;
+    """ 
+  ), {'user_id': session['current_user_id']})
+
+  g.conn.commit()
+
+  cursor = g.conn.execute(text(
+    """
+    UPDATE Customers
+    SET subscription_status = FALSE
+    WHERE user_id = :user_id;
+    """
+  ), {'user_id': session['current_user_id']})
+
+  g.conn.commit()
 
   return redirect(customer_bp.url_prefix + '/profile') 

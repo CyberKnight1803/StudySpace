@@ -13,5 +13,14 @@
 
   <p><a href="/customer/signup">Register as new customer?</a></p>
   <p><a href="/author/signup">Register as new author?</a></p>
+
+  <h3>Subscription Plans</h3>
+  {% for subscription in subscription_plans %}
+    <h3>Plan {{subscription['subscription_id']}}: {{subscription[subscription_name]}}</h3>
+    <p>Cost: ${{subscription['subscription_cost']}}</p>
+    <p>Description:</p>
+    <p>{{subscription['description']}}</p>
+  {% endfor %}
+
  </body>
 </html>

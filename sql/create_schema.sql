@@ -122,7 +122,7 @@ CREATE TABLE Written_by (
     book_id INT,
     PRIMARY KEY (user_id, book_id),
     FOREIGN KEY (user_id) REFERENCES Authors,
-    FOREIGN KEY (book_id) REFERENCES Books
+    FOREIGN KEY (book_id) REFERENCES Books ON DELETE CASCADE
 );
 
 CREATE TABLE Subscribe (
@@ -132,7 +132,7 @@ CREATE TABLE Subscribe (
     end_date TIMESTAMP NOT NULL,
     CHECK (end_date = start_date + '1 year'),
     PRIMARY KEY (user_id),
-    FOREIGN KEY (user_id) REFERENCES Customers,
+    FOREIGN KEY (user_id) REFERENCES Customers ON DELETE CASCADE,
     FOREIGN KEY (subscription_id) REFERENCES Subscriptions
 );
 
@@ -140,7 +140,7 @@ CREATE TABLE Accessed_by (
     book_id INT,
     subscription_id INT,
     PRIMARY KEY (book_id, subscription_id),
-    FOREIGN KEY (book_id) REFERENCES Books,
+    FOREIGN KEY (book_id) REFERENCES Books ON DELETE CASCADE,
     FOREIGN KEY (subscription_id) REFERENCES Subscriptions
 );
 
@@ -149,7 +149,7 @@ CREATE TABLE Payments (
     transaction_id INT,
     subscription_id INT NOT NULL,
     PRIMARY KEY (user_id, transaction_id),
-    FOREIGN KEY (user_id) REFERENCES Customers,
+    FOREIGN KEY (user_id) REFERENCES Customers ON DELETE CASCADE,
     FOREIGN KEY (transaction_id) REFERENCES PaymentTransactions,
     FOREIGN KEY (subscription_id) REFERENCES Subscriptions
 );
