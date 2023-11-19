@@ -13,10 +13,18 @@
   <h1>Study Space</h1>
 
   <form method="POST" action=/author/login>
-    Email: <input type="text" name="email" required><br>
-    Password: <input type="text" name="password" required><br>
+    <label>Email</label><br>
+    <input type="text" name="email" required><br>
+    <label>Password</label><br>
+    <input type="password" name="password" required><br>
+    
+    <p></p>
     <input type="submit" value="Submit">
   </form>
+
+  {% if incorrect_details == "True" %}
+  <p>Please fill correct login credentials</p>
+  {% endif %}
 </body>
 
 </html>

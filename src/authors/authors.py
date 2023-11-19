@@ -47,6 +47,7 @@ def login():
     session['current_user_id'] = query_res[0]
     session['user_type'] = 'author'
     return redirect(author_bp.url_prefix) 
+
 @author_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
   if request.method == 'GET':
@@ -84,11 +85,42 @@ def signup():
     except Exception as e:
       return redirect(author_bp.url_prefix + '/signup' + '?incorrect_details=True')
     return redirect(author_bp.url_prefix + '/login') 
+  
+
 @author_bp.route('/logout', methods=['POST'])
 def logout():
   session.pop('current_user_id', None)
   session.pop('user_type', None)
   return redirect('/')
+
+@author_bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+  if request.method == 'GET':
+    incorrect_details = request.args.get('incorrect_details')
+    return render_template('reset_password.html', incorrect_details=incorrect_details) 
+  
+  else:
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+
+    if password != confirm_password:
+      return redirect(author_bp.url_prefix + '/reset-password' + '?incorrect_details=True')
+
+    try:
+      cursor = g.conn.execute(text(
+      """
+      UPDATE Authors 
+      SET password=:password
+      WHERE user_id=:user_id;
+      """
+      ), {'user_id': session['current_user_id'], 'password': password})
+    
+      g.conn.commit()
+
+    except Exception as e:
+      return redirect(author_bp.url_prefix + '/reset-password' + '?incorrect_details=True')
+
+    return redirect(author_bp.url_prefix + '/profile')
 
 
 
@@ -112,6 +144,7 @@ def view_profile():
     else:
       query_data.append(query_res[i])
   return render_template('profile.html', author=query_data, incorrect_details=query_params)
+
 @author_bp.route('/profile', methods=['POST'])
 def update_profile():
   update_profile_details = {
