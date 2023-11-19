@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<p><a href="/author">Home Page</a></p>
+
+<body>
+  <h1>Study Space</h1>
+
+  <form method="POST" action="/author/add_book">
+    <label>Book Name: </label><br>
+    <input type="text" name="book_name" required><br>
+
+    <label>Edition: </label><br>
+    <input type="number" name="edition" maxlength="10"><br>
+
+    <label>Number of Pages: </label><br>
+    <input type="number" name="pages" maxlength="10"><br>
+
+    <label>Description: </label><br>
+    <input type="text" name="description" required><br>
+
+    <label>Language: </label><br>
+    <input type="text" name="language" required><br>
+
+    <label>Secondary Author ids (Comma separated): </label><br>
+    <input type="text" name="authors" required><br>
+
+    <label>Publisher Name</label>
+    <select id="publisher_id" name="publisher_id">
+      {% for publisher in publishers: %}
+      <option value="{{publisher[0]}}">{{publisher[1]}}</option>
+      {% endfor %}
+    </select><br>
+
+
+    <label>Book Link: </label><br>
+    <input type="text" name="google_link" required><br>
+
+    <p></p>
+    <input type="submit" value="Submit">
+  </form>
+
+  {% if incorrect_details == "True" %}
+  <p>Please fill correct details!</p>
+  {% endif %}
+  {% if incorrect_details == "False" %}
+  <p>Book successfully added!</p>
+  {% endif %}
+</body>
+
+</html>
