@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <form method="POST" action="/author/signup">
+    <label>Given Name: </label><br>
+    <input type="text" name="givenName" required><br>
+
+    <label>Last Name: </label><br>
+    <input type="text" name="lastName" required><br>
+
+    <label>Mobile: </label><br>
+    <input type="number" name="mobile" maxlength="10"><br>
+
+    <label>Address: </label><br>
+    <input type="text" name="is_verified"><br>
+
+    <label>Email: </label><br>
+    <input type="email" name="email" required><br>
+
+    <label>Password: </label><br>
+    <input type="password" name="password" minlength="5" required><br>
+
+
+    <p></p>
+    <input type="submit" value="Submit">
+  </form>
+
+  {% if incorrect_details == "True" %}
+  <p>Please fill correct details!</p>
+  {% endif %}
+</body>
+
+</html>

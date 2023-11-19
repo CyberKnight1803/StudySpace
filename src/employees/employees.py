@@ -117,7 +117,8 @@ def view_customers():
     SELECT * 
     FROM Customers C
   """))
-  query_res = cursor
+  g.conn.commit()
+  query_res = cursor.fetchall()
   if query_res is None:
     return redirect(employee_bp.url_prefix)
   return render_template('employees/views/customers.html', customers=query_res)
@@ -179,14 +180,41 @@ def remove_customer():
   sql_query_params = {
     'user_id': request.form.get('customer_id')
   } 
+  try:
+    cursor = g.conn.execute(text("""
+      DELETE FROM Customers C 
+      WHERE C.user_id=:user_id
+    """), sql_query_params)
+    g.conn.commit()
+    affected_rows = cursor.rowcount
+    if affected_rows == 0:
+      incorrect_message = "True"
+    else:
+      incorrect_message = "False"
+  except Exception as e:
+    print("The deletion error is still there")
+    pass
+    
+  return render_template('employees/edits/get_customer.html', incorrect_details=incorrect_message)
+
+@employee_bp.route('/verify/author', methods=['GET'])
+def get_profile():
+  return render_template('employees/edits/get_author.html')
+@employee_bp.route('/verify/author', methods=['POST'])
+def verify_profile():
+  update_profile_details = {
+    'is_verified': True,
+    'user_id': request.form.get('author_id')
+  }
   cursor = g.conn.execute(text("""
-    DELETE FROM Customers C 
-    WHERE C.user_id=:user_id
-  """), sql_query_params)
+    UPDATE Authors
+    SET is_verified=:is_verified
+    WHERE user_id=:user_id
+  """), update_profile_details)
   g.conn.commit()
   affected_rows = cursor.rowcount
   if affected_rows == 0:
     incorrect_message = "True"
   else:
     incorrect_message = "False"
-  return render_template('employees/edits/get_customer.html', incorrect_details=incorrect_message)
+  return redirect(employee_bp.url_prefix + '/verify/author'+'?incorrect_details='+incorrect_message)

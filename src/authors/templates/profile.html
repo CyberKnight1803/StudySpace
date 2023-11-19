@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/author">Home Page</a></p>
+
+  <form method="POST" action="/author/profile">
+    <label>Given Name: </label><br>
+    <input type="text" name="givenName" value="{{author[1]}}" readonly><br>
+
+    <label>Last Name: </label><br>
+    <input type="text" name="lastName" value="{{author[2]}}" readonly><br>
+
+    <label>Mobile: </label><br>
+    <input type="number" name="mobile" maxlength="10" value="{{author[3]}}"><br>
+
+    <label>Email: </label><br>
+    <input type="email" name="email" value="{{author[4]}}"><br>
+
+    <label>Address: </label><br>
+    <input type="text" name="address" value="{{author[6]}}"><br>
+
+    <p></p>
+    <input type="submit" value="Update Details">
+  </form>
+
+  {% if incorrect_details == "True" %}
+  <p>Please fill correct details to udpate!</p>
+  {% endif %}
+
+  <p>Payment Details: {{author[7]}}</p>
+  {% if author[8] == True %}
+  <p>Subscription Status: Active</p>
+  {% else %}
+  <p>Subscription Status: Not Active</p>
+  {% endif %}
+</body>
+
+</html>

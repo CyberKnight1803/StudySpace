@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  <form method="POST" action="/employee/verify/author">
+    <label>Add Author ID: </label><br>
+    <input type="author_id" name="author_id" required><br>
+
+    <p></p>
+    <input type="submit" value="Submit">
+  </form>
+  {% if incorrect_details == "True" %}
+  <p>No such author exists.</p>
+  {% endif %}
+  {% if incorrect_details== "True" %}
+  <p>Author successfully verified.</p>
+  {% endif %}
+</body>
+
+</html>
