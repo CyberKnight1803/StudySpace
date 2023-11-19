@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  {% for customer in customers %}
+  <h3>User ID: {{customer[0]}}</h3>
+  <p>Name: {{customer[1] + " " + customer[2]}}</p>
+  <p>Mobile: {{customer[3]}}</p>
+  <p>Email: {{customer[4]}}</p>
+  <p>Address: {{customer[6]}}</p>
+  <p>Subscription Status: {{customer[8]}}</p>
+  {% endfor %}
+
+</body>
+
+</html>

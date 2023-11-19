@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  {% for author in authors %}
+  <h3>Author ID: {{author[0]}}</h3>
+  <p>Name: {{author[1] + " " + author[2]}}</p>
+  <p>Mobile: {{author[3]}}</p>
+  <p>Email: {{author[4]}}</p>
+  <p>Verification Status: {{author[6]}}</p>
+  {% endfor %}
+
+</body>
+
+</html>

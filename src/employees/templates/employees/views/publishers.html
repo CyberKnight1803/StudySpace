@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+</head>
+
+<body>
+  <h1>Study Space</h1>
+
+  <p><a href="/employee">Home Page</a></p>
+
+  {% for publisher in publishers %}
+  <h3>Publisher ID: {{publisher[0]}}</h3>
+  <p>Name: {{publisher[1]}}</p>
+  {% endfor %}
+
+</body>
+
+</html>
