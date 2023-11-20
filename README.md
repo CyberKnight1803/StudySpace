@@ -17,9 +17,9 @@ URL: `http://<IP>:8111`
   b. Users can signup and create their customer account.
 
 - Profile  
-  a. ustomers can update their profile details  
+  a. Customers can update their profile details  
   b. Customers can reset their password  
-  c. Cusomters can purchase a subscription plan according to their needs.
+  c. Customers can purchase a subscription plan according to their needs.
 
 - Transaction History  
   Customer can see their payment history
@@ -38,11 +38,38 @@ URL: `http://<IP>:8111`
   a. Authors can Login, Logout.  
   b. Users can signup and create their author account if they wish to publish books.
 
+- Changes
+  a. Authors can add books, along with who gets to access them.
+  b. Authors can view all the books they have written and posted.
+
+- Profile
+  a. Authors can see all their information.
+  b. Authors can update their profile information.
+
 ### Employees
 
 - Authentication  
   a. Employees can Login, Logout.  
   b. An employee can not be registered via the portal, can be done only by superadmin on backend.
+
+- Profile
+  a. Employees can see all their information.
+  b. Employees can update their profile information.
+
+- Views
+  a. Employees can view all books.
+  b. Employees can view all customers.
+  c. Employees can view all authors.
+  d. Employees can view all payment transactions.
+  e. Employees can view all publishers.
+
+- Changes
+  a. Employees can add publishers (Only employees can do this).
+  b. Employees can verify authors.
+
+- Deletions
+  a. Employees can remove customers.
+  b. Employees can remove books.
 
 ## Features Not Implemented
 
@@ -109,3 +136,4 @@ To access the book, you need to click on view more which leads to the page -
 Which will show more details about the book also, based on your subscription plan, you can get the link to access the book as a pdf.
 
 ## Interesting WebPage - 2
+
