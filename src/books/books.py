@@ -58,7 +58,8 @@ def show_book():
     access_indicator = False
   cursor = g.conn.execute(text("""
     SELECT *
-    FROM Accessed_by Ab on Ab.book_id=:book_id
+    FROM Accessed_by Ab
+    WHERE Ab.book_id=:book_id
   """), {"book_id":request.args.get('book_id')})
   query_res = cursor.fetchall()
   cursor.close()
