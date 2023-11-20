@@ -56,4 +56,12 @@ def show_book():
     access_indicator = True
   else:
     access_indicator = False
+  cursor = g.conn.execute(text("""
+    SELECT *
+    FROM Accessed_by Ab on Ab.book_id=:book_id
+  """), {"book_id":request.args.get('book_id')})
+  query_res = cursor.fetchall()
+  cursor.close()
+  if len(query_res)==0:
+    access_indicator = True
   return render_template('books/book.html', book=our_result, access_indicator = access_indicator)
