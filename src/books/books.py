@@ -34,7 +34,7 @@ def show_book():
   query_res = cursor.fetchall()
   cursor.close()
   our_book = query_res
-  print(f"This is our book {our_book}")
+  # print(f"This is our book {our_book}")
   our_result = {"book_name": our_book[0][0],"edition": our_book[0][1],"pages": our_book[0][2],"publication_year": our_book[0][3],"description": our_book[0][4],"language": our_book[0][5],"google_link": our_book[0][6],"publisher_name": our_book[0][9]}
   authors = []
   sections = []
