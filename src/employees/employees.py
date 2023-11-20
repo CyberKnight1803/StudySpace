@@ -37,7 +37,7 @@ def login():
     g.conn.commit()
 
     query_res = cursor.fetchone()
-
+    cursor.close()
     if query_res is None:
       return redirect(employee_bp.url_prefix + '/login' + '?incorrect_details=True')
 
@@ -68,6 +68,7 @@ def view_profile():
   """), sql_query_params)
 
   query_res = cursor.fetchone()
+  cursor.close()
 
   if query_res is None:
     return redirect(employee_bp.url_prefix)
@@ -119,6 +120,7 @@ def view_customers():
   """))
   g.conn.commit()
   query_res = cursor.fetchall()
+  cursor.close()
   if query_res is None:
     return redirect(employee_bp.url_prefix)
   return render_template('employees/views/customers.html', customers=query_res)
@@ -155,6 +157,7 @@ def view_books():
     FROM Books B
   """))
   query_res = cursor.fetchall()
+  cursor.close()
   if query_res is None:
     return redirect(employee_bp.url_prefix)
   books = query_res
@@ -167,6 +170,7 @@ def view_books():
     """), {"book_id":book[0]})
     g.conn.commit()
     query_res = cursor.fetchall()
+    cursor.close()
     authors_list = ""
     for author in query_res:
       authors_list = authors_list + author[1]+" "+author[2] + ", "
@@ -185,6 +189,7 @@ def view_payments():
   """))
   g.conn.commit()
   query_res = cursor.fetchall()
+  cursor.close()
   if query_res is None:
     return redirect(employee_bp.url_prefix)
   return render_template('employees/views/payments.html', payments=query_res)
@@ -230,6 +235,7 @@ def remove_customer():
       incorrect_message = "True"
     else:
       incorrect_message = "False"
+    cursor.close()
   except Exception as e:
     print("The deletion error is still there")
     pass
@@ -256,6 +262,7 @@ def remove_book():
       incorrect_message = "True"
     else:
       incorrect_message = "False"
+    cursor.close()
   except Exception as e:
     print("The deletion error is still there")
     pass
@@ -281,4 +288,5 @@ def verify_profile():
     incorrect_message = "True"
   else:
     incorrect_message = "False"
+  cursor.close()
   return render_template('employees/edits/get_author.html', incorrect_details=incorrect_message)
