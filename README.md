@@ -48,7 +48,7 @@ URL: `http://<IP>:8111`
 
 Contraints requiring triggers. Eg: Total Participation Constraint
 
-## Interesting WebPages
+## Interesting WebPage - 1
 
 ### Search System
 
@@ -78,9 +78,9 @@ SELECT B.book_id,
     JOIN Authors A ON WB.user_id = A.user_id
     JOIN Classified_by CB ON B.book_id = CB.book_id
     JOIN Sections S ON CB.section_id = S.section_id
-  WHERE LOWER(B.book_name) LIKE '%' || LOWER(:title) || '%'
-    AND B.publication_year BETWEEN :from_year AND :to_year
-    AND CONCAT(LOWER(A.given_name), ' ', LOWER(A.last_name)) LIKE '%' || LOWER(:author_name) || '%'
+  WHERE LOWER(B.book_name) LIKE '%' || LOWER(:title) || '%' <- DYNAMIC
+    AND B.publication_year BETWEEN :from_year AND :to_year <- DYNAMIC
+    AND CONCAT(LOWER(A.given_name), ' ', LOWER(A.last_name)) LIKE '%' || LOWER(:author_name) || '%' <- DYNAMIC
     AND B.edition = :edition        <- DYNAMIC
     AND S.section_id=:section_id    <- DYNAMIC
   GROUP BY
@@ -107,3 +107,5 @@ To access the book, you need to click on view more which leads to the page -
 `http://<IP>:8111/books/book?book_id=<book_id>`
 
 Which will show more details about the book also, based on your subscription plan, you can get the link to access the book as a pdf.
+
+## Interesting WebPage - 2
