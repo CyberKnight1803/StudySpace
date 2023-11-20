@@ -13,5 +13,39 @@
   <form method="POST" action="/customer/logout">
     <input type="submit" value="Logout">
   </form>
+
+  <h3>Search - Books</h3>
+  <form method="POST" action="/customer">
+    <label>Title: </label>
+    <input type="text" name="title"/><br>
+
+    <p></p>
+
+    <label>Edition</label>
+    <input type="number" name="edition"/>
+
+    <label>Section: </label>
+    <select name="section_id">
+        <option value="all">All</option>
+      {% for section in sections %}
+        <option value="{{section['section_id']}}">{{section['section_name']}}</option>
+      {% endfor %}
+    </select><br>
+
+    <p></p>
+
+    <label>From Year:</label>
+    <input type="number" name="from_year"/>
+    
+    <label>To Year:</label>
+    <input type="number" name="to_year"/><br>
+
+    <p></p>
+    <label>Author: </label>
+    <input type="text" name="author_name"/><br>
+
+    <p></p>
+    <input type="submit" value="search"/>
+  </form>
  </body>
 </html>

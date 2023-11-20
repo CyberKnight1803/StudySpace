@@ -26,7 +26,7 @@
   <p>.</p>
 
   {% if access_indicator == True %}
-  <p>Link: {{book["google_link"]}}</p>
+  <p><a href="{{book['google_link']}}" target="_blank">View Book</a></p>
   {% endif %}
   {% if access_indicator != True %}
   <p>You don't have access to this link!</p>

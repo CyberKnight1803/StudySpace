@@ -1,6 +1,7 @@
 import uuid
-from flask import Blueprint, render_template, g, request, redirect, session
+from flask import Blueprint, render_template, g, request, redirect, session, url_for
 from sqlalchemy import * 
+from datetime import datetime
 
 customer_bp = Blueprint(
   'customer_bp', 
@@ -9,12 +10,22 @@ customer_bp = Blueprint(
   url_prefix='/customer'
 )
 
-@customer_bp.route('/')
+@customer_bp.route('/', methods=['GET'])
 def index():
   if 'current_user_id' not in session or session['user_type'] != 'customer':
     return redirect(customer_bp.url_prefix + '/login')
   
-  return render_template('customers/index.html')
+  cursor = g.conn.execute(text(
+    """
+    SELECT S.section_id, S.section_name
+    FROM Sections S;
+    """
+  ))
+  g.conn.commit()
+  sections = cursor.mappings().all()
+  cursor.close()
+
+  return render_template('customers/index.html', sections=sections)
 
 @customer_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -37,6 +48,7 @@ def login():
     g.conn.commit()
 
     query_res = cursor.fetchone()
+    cursor.close()
 
     if query_res is None: 
       return redirect(customer_bp.url_prefix + '/login' + '?incorrect_details=True')
@@ -72,7 +84,7 @@ def signup():
       return redirect(customer_bp.url_prefix + '/signup' + '?incorrect_details=True')
 
     try:
-      query_res = g.conn.execute(text("""
+      cursor = g.conn.execute(text("""
       INSERT INTO customers (
         user_id, given_name, last_name, mobile, email, password, address
       ) VALUES (
@@ -86,6 +98,7 @@ def signup():
       )
       """), new_customer)
       g.conn.commit()
+      cursor.close()
 
     except Exception as e:
       return redirect(customer_bp.url_prefix + '/signup' + '?incorrect_details=True')
@@ -109,8 +122,8 @@ def view_profile():
 
   cursor = g.conn.execute(text("""SELECT * FROM Customers C WHERE C.user_id=:user_id"""), sql_query_params)
   g.conn.commit()
-
   query_res = cursor.mappings().all()
+  cursor.close()
 
   if query_res is None: 
     return redirect(customer_bp.url_prefix)
@@ -128,8 +141,9 @@ def view_profile():
     FROM Customers C, Subscriptions S, Subscribe sub
     WHERE C.user_id = :user_id AND C.user_id = sub.user_id AND S.subscription_id = sub.subscription_id
     """), {'user_id': session['current_user_id']}) 
-
+    g.conn.commit()
     query_res = cursor.fetchone()
+    cursor.close()
 
     if query_res is not None:
       subscription_name = query_res[0]
@@ -153,6 +167,7 @@ def update_profile():
     """), update_profile_details)
 
     g.conn.commit()
+    cursor.close()
 
   except Exception as e:
     return redirect(customer_bp.url_prefix + '/profile' + '?incorrect_details=True')
@@ -178,6 +193,7 @@ def cancel_subscription():
       """
     ), {'user_id': session['current_user_id']})
     g.conn.commit()
+    cursor.close()
 
   except Exception as e:
     pass 
@@ -198,8 +214,8 @@ def view_transaction_history():
     """
   ), {'user_id': session['current_user_id']})
   g.conn.commit()
-
   transactions = cursor.mappings().all()
+  cursor.close()
   
   noTransactions = False 
   if transactions is None:
@@ -217,6 +233,7 @@ def delete_payment_details():
     """
   ), {'user_id': session['current_user_id']})
   g.conn.commit()
+  cursor.close()
 
   return redirect(customer_bp.url_prefix + '/profile')
 
@@ -243,8 +260,80 @@ def reset_password():
       ), {'user_id': session['current_user_id'], 'password': password})
     
       g.conn.commit()
+      cursor.close()
 
     except Exception as e:
       return redirect(customer_bp.url_prefix + '/reset-password' + '?incorrect_details=True')
 
     return redirect(customer_bp.url_prefix + '/profile')
+  
+@customer_bp.route('/', methods=['POST'])
+def search():
+  conditions = []
+
+  title = request.form.get('title')
+  edition = request.form.get('edition')
+  if edition != '':
+    conditions.append("AND B.edition = :edition")
+
+  section_id = request.form.get('section_id') 
+  if section_id != 'all':
+    conditions.append("AND S.section_id=:section_id")
+
+  from_year = request.form.get('from_year')
+  if from_year == '':
+    from_year = 1
+
+  to_year = request.form.get('to_year')
+  if to_year == '':
+    to_year = datetime.today().year
+
+  author_name = request.form.get('author_name')
+
+  # print(f"Title: {title}")
+  # print(f"edition: {edition}")
+  # print(f"section_id: {section_id}")
+  # print(f"from_year: {from_year}")
+  # print(f"to_year: {to_year}")
+  # print(f"author_name: {author_name}")
+
+  search_params = {
+    'title': title, 
+    'edition': edition, 
+    'section_id': section_id, 
+    'from_year': from_year, 
+    'to_year': to_year, 
+    'author_name': author_name
+  }
+
+  star_query = """
+  SELECT B.book_id,
+    B.book_name,
+    B.edition,
+    B.publication_year,
+    STRING_AGG(DISTINCT CONCAT(A.given_name, ' ', A.last_name), ', ') AS author_names,
+    STRING_AGG(DISTINCT section_name, ', ') AS sections
+  FROM Books B
+    JOIN Written_by WB ON B.book_id = WB.book_id
+    JOIN Authors A ON WB.user_id = A.user_id
+    JOIN Classified_by CB ON B.book_id = CB.book_id
+    JOIN Sections S ON CB.section_id = S.section_id 
+  WHERE LOWER(B.book_name) LIKE '%' || LOWER(:title) || '%' AND B.publication_year BETWEEN :from_year AND :to_year AND CONCAT(LOWER(A.given_name), ' ', LOWER(A.last_name)) LIKE '%' || LOWER(:author_name) || '%'"""
+
+  if len(conditions) != 0:
+    star_query += ' '
+    star_query += ' '.join(conditions)
+
+  star_query += " GROUP BY B.book_id, B.book_name, B.edition, B.publication_year;"
+  
+  cursor = g.conn.execute(text(star_query), search_params)
+  g.conn.commit()
+
+  search_res = cursor.mappings().all()
+  # print(search_res)
+  return render_template('customers/search_results.html', search_results=search_res)
+
+
+@customer_bp.route('/', methods=['DELETE'])
+def clear_search():
+  pass 

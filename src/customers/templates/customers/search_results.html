@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Study Space</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th, td {
+        background-color: #f2f2f2;
+        color: #333;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    a {
+        color: #1a0dab;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+
+<body>
+  <p><a href="/customer">Home</a></p>
+  <table>
+    <tr>
+      <th>Sr No.</th>
+      <th>Author Names</th>
+      <th>Book Name</th>
+      <th>Edition</th>
+      <th>Publication Year</th>
+      <th>Sections</th>
+      <th>Links</th>
+    </tr>
+    {% for search_res in search_results %}
+    <tr>
+      <td>{{loop.index}}</td>
+      <td>{{search_res['author_names']}}</td>
+      <td>{{search_res['book_name']}}</td>
+      <td>{{search_res['edition']}}</td>
+      <td>{{search_res['publication_year']}}</td>
+      <td>{{search_res['sections']}}</td>
+      <td><a href="/books/book?book_id={{search_res['book_id']}}">view more</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

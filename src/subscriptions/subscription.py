@@ -21,6 +21,7 @@ def index():
   ))
   g.conn.commit()
   subscriptions = cursor.fetchall()
+  cursor.close()
 
   cursor = g.conn.execute(text(
     """
@@ -34,8 +35,9 @@ def index():
     """
   ), {'user_id': session['current_user_id']})
   g.conn.commit()
-
   subscription_ids = cursor.fetchall()
+  cursor.close()
+
   not_subscribed_subscription_ids = []
   for subscription_id in subscription_ids:
     not_subscribed_subscription_ids.append(subscription_id[0])
@@ -55,9 +57,8 @@ def update_subscription():
   ), {'user_id': session['current_user_id']})
 
   g.conn.commit()
-
   payment_details = cursor.fetchone()
-  print(payment_details)
+  cursor.close()
 
   if payment_details[0] is None:
     return redirect(subscription_bp.url_prefix + '/payment-details' + f'?subscription_id={subscription_id}')
@@ -72,9 +73,8 @@ def update_subscription():
         """
       ), {'user_id': session['current_user_id']})
       g.conn.commit()
-
       subscription_status = cursor.scalar()
-      print(f"subscription_status: {subscription_status}")
+      cursor.close()
 
       if subscription_status:
         cursor = g.conn.execute(text(
@@ -84,6 +84,7 @@ def update_subscription():
           """
         ), {'user_id': session['current_user_id']})
         g.conn.commit()
+        cursor.close()
 
       current_timestamp = datetime.now()
       start_date = current_timestamp.strftime("%Y-%m-%d %H:%M:%S")
@@ -95,6 +96,7 @@ def update_subscription():
       VALUES (:user_id, :subscription_id, :start_date, :end_date);         
       """), {'user_id': session['current_user_id'], 'subscription_id': subscription_id, 'start_date': start_date, 'end_date': end_date})
       g.conn.commit()
+      cursor.close()
 
       # Update PaymentTransactions Table
       cursor = g.conn.execute(text(
@@ -106,6 +108,7 @@ def update_subscription():
       ), {'date': start_date})
       g.conn.commit()
       transaction_id = cursor.scalar()
+      cursor.close()
 
       # Update Payments Table
       cursor = g.conn.execute(text(
@@ -115,6 +118,7 @@ def update_subscription():
         """
       ), {'user_id': session['current_user_id'], 'transaction_id': transaction_id, 'subscription_id': subscription_id})
       g.conn.commit()
+      cursor.close()
 
       # Update Customer Table 
       cursor = g.conn.execute(text(
@@ -125,6 +129,7 @@ def update_subscription():
         """
       ), {'user_id': session['current_user_id']})
       g.conn.commit()
+      cursor.close()
 
     except Exception as e:
       print('ERROR AT update_subscription')
@@ -156,6 +161,7 @@ def subscription_payment_details():
     VALUES (:user_id, :subscription_id, :start_date, :end_date);         
     """), {'user_id': session['current_user_id'], 'subscription_id': subscription_id, 'start_date': start_date, 'end_date': end_date})
     g.conn.commit()
+    cursor.close()
 
     # Update PaymentTransactions Table
     cursor = g.conn.execute(text(
@@ -167,6 +173,7 @@ def subscription_payment_details():
     ), {'date': start_date})
     g.conn.commit()
     transaction_id = cursor.scalar()
+    cursor.close()
 
     # Update Payments Table
     cursor = g.conn.execute(text(
@@ -176,6 +183,7 @@ def subscription_payment_details():
       """
     ), {'user_id': session['current_user_id'], 'transaction_id': transaction_id, 'subscription_id': subscription_id})
     g.conn.commit()
+    cursor.close()
 
     # Update Customer Table
     cursor = g.conn.execute(text(
@@ -185,6 +193,7 @@ def subscription_payment_details():
       WHERE user_id=:user_id; 
       """), {'user_id': session['current_user_id'], 'payment_details': payment_details})
     g.conn.commit()
+    cursor.close()
     
     # except Exception as e:
       # return redirect('/customer/profile')
