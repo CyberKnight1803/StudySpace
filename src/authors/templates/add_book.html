@@ -27,10 +27,13 @@
     <label>Language: </label><br>
     <input type="text" name="language" required><br>
 
-    <label>Secondary Author ids (Comma separated): </label><br>
-    <input type="text" name="authors" required><br>
+    <label>Publication Year: </label><br>
+    <input type="number" name="publication_year" required/><br>
 
-    <label>Publisher Name</label>
+    <label>Secondary Author ids (Comma separated): </label><br>
+    <input type="text" name="authors"><br>
+
+    <label>Publisher Name</label><br>
     <select id="publisher_id" name="publisher_id">
       {% for publisher in publishers: %}
       <option value="{{publisher[0]}}">{{publisher[1]}}</option>
@@ -40,6 +43,23 @@
 
     <label>Book Link: </label><br>
     <input type="text" name="google_link" required><br>
+
+    <label>Section</label><br>
+    <select name="section_ids" multiple>
+      {% for section in sections %}
+        <option value="{{section['section_id']}}">{{section['section_name']}}</option>
+      {% endfor %}
+    </select><br>
+
+    <p></p>
+
+    <label>Viewer Access</label><br>
+    <select name="subscription_id">
+      <option value="all">All</option>
+      {% for subscription in subscriptions %}
+        <option value="{{subscription['subscription_id']}}">{{subscription['subscription_name']}}</option>
+      {% endfor %}
+    </select><br>
 
     <p></p>
     <input type="submit" value="Submit">

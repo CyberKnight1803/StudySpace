@@ -177,9 +177,36 @@ def add_book():
     FROM Authors A
     """))
   all_authors = query_res.scalars().all()
+  query_res.close()
+
+  cursor = g.conn.execute(text(
+    """
+    SELECT S.subscription_id, S.subscription_name
+    FROM Subscriptions S;
+    """
+  ))
+
+  g.conn.commit()
+  subscriptions = cursor.mappings().all()
+  cursor.close()
+
+  cursor = g.conn.execute(text(
+    """
+    SELECT S.section_id, S.section_name
+    FROM Sections S;
+    """
+  ))
+
+  g.conn.commit()
+  sections = cursor.mappings().all()
+  cursor.close()
+
+
+
   if request.method == 'GET':
     query_param = request.args.get('incorrect_details')
-    return render_template('add_book.html', publishers= publishers, incorrect_details=query_param)
+    return render_template('add_book.html', publishers= publishers, incorrect_details=query_param, subscriptions=subscriptions, sections=sections)
+  
   else:
     new_book = {
       'book_name': request.form.get('book_name'), 
@@ -190,8 +217,13 @@ def add_book():
       'language': request.form.get('language'),
       'google_link': request.form.get('google_link'),
       'publisher_id': request.form.get('publisher_id'),
-      'authors': request.form.get('authors')
+      'authors': request.form.get('authors'), 
     }
+
+    subscription_id = request.form.get('subscription_id')
+    section_ids = request.form.getlist('section_ids')
+    # print(subscription_id, type(subscription_id))
+
     try:
       query_res = g.conn.execute(text("""
       INSERT INTO books (
@@ -207,7 +239,11 @@ def add_book():
       )
       RETURNING book_id
       """), new_book)
+      g.conn.commit()
       new_book["book_id"] = query_res.scalar()
+      book_id = new_book['book_id']
+      query_res.close()
+
       query_res2 = g.conn.execute(text("""
       INSERT INTO Published_by (
         book_id,publisher_id
@@ -216,11 +252,47 @@ def add_book():
         :publisher_id
       )
       """), new_book)
-      authors = new_book["authors"].split(",")
+      g.conn.commit()
+      query_res2.close()
+
+      if subscription_id != 'all':
+        cursor = g.conn.execute(text(
+          """
+          INSERT INTO Accessed_by (book_id, subscription_id)
+          VALUES (:book_id, :subscription_id);
+          """
+        ), {'book_id': book_id, 'subscription_id': subscription_id})
+        g.conn.commit()
+        cursor.close()
+
+        if subscription_id == '1':
+          cursor = g.conn.execute(text(
+            """
+            INSERT INTO Accessed_by (book_id, subscription_id)
+            VALUES (:book_id, 2);
+            """
+          ), {'book_id': book_id})
+          g.conn.commit()
+          cursor.close()
+
+      for section_id in section_ids:
+        cursor = g.conn.execute(text(
+          """
+          INSERT INTO Classified_by (book_id, section_id)
+          VALUES(:book_id, :section_id)
+          """
+        ), {'book_id': book_id, 'section_id': section_id})
+        g.conn.commit()
+        cursor.close()
+
+      authors = [session['current_user_id']]
+      secondary_authors = new_book["authors"].split(",")
+
+      if not(len(secondary_authors) == 1 and secondary_authors[0] == ''):
+         authors += secondary_authors
+
       for author in authors:
         author = author.strip()   #Removing whitespaces
-        print(author)
-        print(all_authors)
         if author not in all_authors:
           print("The author id does not exist")
           raise Exception('The author id does not exist')
@@ -236,9 +308,8 @@ def add_book():
         g.conn.commit()
     except Exception as e:
       return redirect(author_bp.url_prefix + '/add_book' + '?incorrect_details=True')
-    return redirect(author_bp.url_prefix + '/add_book' + '?incorrect_details=False') 
-
-
+    
+    return redirect(author_bp.url_prefix) 
 
 
 #View all my books
@@ -268,7 +339,8 @@ def view_books():
     for author in query_res:
       authors_list = authors_list + author[1]+" "+author[2] + ", "
       authors_ids = authors_ids + author[0] + ", "
-    print(authors_ids)
+  
+
     authors_list = authors_list[:-2]
     temp_book = list(book)
     if session['current_user_id'] in authors_ids:
